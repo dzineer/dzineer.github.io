@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dzineer | AI Engineering & Intelligent Solutions</title>
+  <meta name="description" content="Dzineer - Building the future with AI. Expert AI engineering, LLM integration, MCP tooling, and full-stack development.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg-primary:#06080f;
+      --bg-secondary:#0c1020;
+      --bg-card:#111628;
+      --bg-card-hover:#161d38;
+      --accent-blue:#3b82f6;
+      --accent-purple:#8b5cf6;
+      --accent-cyan:#06b6d4;
+      --accent-emerald:#10b981;
+      --accent-orange:#f59e0b;
+      --accent-pink:#ec4899;
+      --text-primary:#f1f5f9;
+      --text-secondary:#94a3b8;
+      --text-muted:#64748b;
+      --border:#1e293b;
+      --glow-blue:rgba(59,130,246,.15);
+      --glow-purple:rgba(139,92,246,.15);
+    }
+    html{scroll-behavior:smooth;font-size:16px}
+    body{
+      font-family:'Inter',system-ui,-apple-system,sans-serif;
+      background:var(--bg-primary);
+      color:var(--text-primary);
+      line-height:1.6;
+      overflow-x:hidden;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    /* ── Animated Background ── */
+    #bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+    /* ── Navigation ── */
+    .nav{
+      position:fixed;top:0;left:0;right:0;z-index:100;
+      padding:1rem 2rem;
+      background:rgba(6,8,15,.8);
+      backdrop-filter:blur(20px);
+      border-bottom:1px solid rgba(30,41,59,.5);
+      transition:all .3s ease;
+    }
+    .nav.scrolled{background:rgba(6,8,15,.95);box-shadow:0 4px 30px rgba(0,0,0,.3)}
+    .nav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+    .nav-logo{display:flex;align-items:center;gap:.75rem;text-decoration:none;color:var(--text-primary)}
+    .nav-logo-icon{
+      width:40px;height:40px;border-radius:10px;
+      background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));
+      display:flex;align-items:center;justify-content:center;
+      font-weight:800;font-size:1.1rem;color:#fff;
+    }
+    .nav-logo-text{font-weight:700;font-size:1.25rem;letter-spacing:-.02em}
+    .nav-links{display:flex;gap:2rem;list-style:none}
+    .nav-links a{color:var(--text-secondary);text-decoration:none;font-size:.875rem;font-weight:500;transition:color .2s}
+    .nav-links a:hover{color:var(--text-primary)}
+    .nav-cta{
+      padding:.5rem 1.25rem;border-radius:8px;font-size:.875rem;font-weight:600;
+      background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));
+      color:#fff;text-decoration:none;border:none;cursor:pointer;
+      transition:transform .2s,box-shadow .2s;
+    }
+    .nav-cta:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(59,130,246,.4)}
+    .mobile-toggle{display:none;background:none;border:none;color:var(--text-primary);font-size:1.5rem;cursor:pointer}
+
+    /* ── Hero ── */
+    .hero{
+      position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;
+      padding:8rem 2rem 6rem;text-align:center;z-index:1;
+    }
+    .hero-content{max-width:900px;position:relative}
+    .hero-badge{
+      display:inline-flex;align-items:center;gap:.5rem;
+      padding:.375rem 1rem;border-radius:100px;
+      background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);
+      color:var(--accent-blue);font-size:.8rem;font-weight:600;
+      margin-bottom:2rem;letter-spacing:.05em;text-transform:uppercase;
+    }
+    .hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--accent-blue);animation:pulse-dot 2s ease infinite}
+    @keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
+    .hero h1{
+      font-size:clamp(2.5rem,6vw,4.5rem);font-weight:900;line-height:1.1;
+      letter-spacing:-.04em;margin-bottom:1.5rem;
+      background:linear-gradient(135deg,#fff 0%,#cbd5e1 40%,var(--accent-blue) 70%,var(--accent-purple) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .hero p{font-size:clamp(1rem,2vw,1.25rem);color:var(--text-secondary);max-width:640px;margin:0 auto 2.5rem;line-height:1.7}
+    .hero-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+    .btn-primary{
+      display:inline-flex;align-items:center;gap:.5rem;
+      padding:.875rem 2rem;border-radius:12px;font-size:1rem;font-weight:600;
+      background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));
+      color:#fff;text-decoration:none;border:none;cursor:pointer;
+      transition:all .3s ease;position:relative;overflow:hidden;
+    }
+    .btn-primary::before{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(135deg,var(--accent-purple),var(--accent-blue));
+      opacity:0;transition:opacity .3s;
+    }
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(59,130,246,.4)}
+    .btn-primary:hover::before{opacity:1}
+    .btn-primary span{position:relative;z-index:1}
+    .btn-secondary{
+      display:inline-flex;align-items:center;gap:.5rem;
+      padding:.875rem 2rem;border-radius:12px;font-size:1rem;font-weight:600;
+      background:transparent;color:var(--text-primary);text-decoration:none;
+      border:1px solid var(--border);cursor:pointer;transition:all .3s ease;
+    }
+    .btn-secondary:hover{border-color:var(--accent-blue);background:rgba(59,130,246,.05);transform:translateY(-2px)}
+
+    /* ── Stats Bar ── */
+    .stats-bar{
+      position:relative;z-index:1;padding:3rem 2rem;
+      border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+      background:rgba(12,16,32,.6);
+    }
+    .stats-grid{
+      max-width:1280px;margin:0 auto;
+      display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;text-align:center;
+    }
+    .stat-item h3{font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-.03em}
+    .stat-item h3 .gradient-text{
+      background:linear-gradient(135deg,var(--accent-blue),var(--accent-cyan));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .stat-item p{color:var(--text-secondary);font-size:.875rem;margin-top:.25rem;font-weight:500}
+
+    /* ── Sections ── */
+    section{position:relative;z-index:1;padding:6rem 2rem}
+    .section-inner{max-width:1280px;margin:0 auto}
+    .section-label{
+      display:inline-flex;align-items:center;gap:.5rem;
+      font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+      color:var(--accent-blue);margin-bottom:1rem;
+    }
+    .section-label::before{content:'';width:20px;height:2px;background:var(--accent-blue);border-radius:2px}
+    .section-title{font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;letter-spacing:-.03em;margin-bottom:1rem}
+    .section-desc{color:var(--text-secondary);font-size:1.1rem;max-width:600px;margin-bottom:3rem}
+
+    /* ── Category Tabs ── */
+    .category-tabs{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:3rem}
+    .cat-tab{
+      padding:.5rem 1.25rem;border-radius:100px;font-size:.85rem;font-weight:600;
+      background:var(--bg-card);color:var(--text-secondary);border:1px solid var(--border);
+      cursor:pointer;transition:all .3s ease;
+    }
+    .cat-tab:hover{border-color:var(--accent-blue);color:var(--text-primary)}
+    .cat-tab.active{
+      background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(139,92,246,.15));
+      border-color:var(--accent-blue);color:var(--text-primary);
+    }
+
+    /* ── Project Cards ── */
+    .projects-grid{
+      display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:1.5rem;
+    }
+    .project-card{
+      background:var(--bg-card);border:1px solid var(--border);border-radius:16px;
+      padding:1.75rem;transition:all .4s ease;position:relative;overflow:hidden;
+      text-decoration:none;color:inherit;display:flex;flex-direction:column;
+    }
+    .project-card::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:3px;
+      background:linear-gradient(90deg,var(--card-accent,var(--accent-blue)),transparent);
+      opacity:0;transition:opacity .3s;
+    }
+    .project-card:hover{
+      background:var(--bg-card-hover);border-color:rgba(59,130,246,.3);
+      transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,.3);
+    }
+    .project-card:hover::before{opacity:1}
+    .card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem}
+    .card-icon{
+      width:44px;height:44px;border-radius:12px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.25rem;flex-shrink:0;
+    }
+    .card-commits{
+      display:flex;align-items:center;gap:.375rem;
+      padding:.25rem .75rem;border-radius:100px;
+      background:rgba(16,185,129,.1);color:var(--accent-emerald);
+      font-size:.75rem;font-weight:700;font-family:'JetBrains Mono',monospace;
+    }
+    .card-commits svg{width:14px;height:14px}
+    .card-name{
+      font-size:1.1rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.01em;
+      display:flex;align-items:center;gap:.5rem;
+    }
+    .card-name .arrow{opacity:0;transform:translateX(-4px);transition:all .3s;color:var(--accent-blue)}
+    .project-card:hover .card-name .arrow{opacity:1;transform:translateX(0)}
+    .card-desc{color:var(--text-secondary);font-size:.875rem;line-height:1.6;flex:1;margin-bottom:1rem}
+    .card-tags{display:flex;flex-wrap:wrap;gap:.375rem}
+    .card-tag{
+      padding:.2rem .6rem;border-radius:6px;font-size:.7rem;font-weight:600;
+      background:rgba(59,130,246,.08);color:var(--accent-blue);
+      border:1px solid rgba(59,130,246,.15);
+    }
+    .card-tag.lang{background:rgba(139,92,246,.08);color:var(--accent-purple);border-color:rgba(139,92,246,.15)}
+    .card-name .card-tag{background:rgba(245,158,11,.1);color:var(--accent-orange);border:1px solid rgba(245,158,11,.2);flex-shrink:0}
+
+    /* ── Services ── */
+    .services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
+    .service-card{
+      background:var(--bg-card);border:1px solid var(--border);border-radius:16px;
+      padding:2rem;transition:all .3s ease;
+    }
+    .service-card:hover{border-color:rgba(59,130,246,.3);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.2)}
+    .service-icon{
+      width:56px;height:56px;border-radius:14px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.5rem;margin-bottom:1.25rem;
+    }
+    .service-card h3{font-size:1.15rem;font-weight:700;margin-bottom:.5rem}
+    .service-card p{color:var(--text-secondary);font-size:.9rem;line-height:1.7}
+
+    /* ── Tech Stack ── */
+    .tech-grid{display:flex;flex-wrap:wrap;gap:.75rem}
+    .tech-pill{
+      display:flex;align-items:center;gap:.5rem;
+      padding:.5rem 1rem;border-radius:10px;
+      background:var(--bg-card);border:1px solid var(--border);
+      font-size:.85rem;font-weight:500;color:var(--text-secondary);
+      transition:all .3s ease;
+    }
+    .tech-pill:hover{border-color:var(--accent-blue);color:var(--text-primary);background:var(--bg-card-hover)}
+    .tech-pill-dot{width:8px;height:8px;border-radius:50%}
+
+    /* ── Contact / CTA ── */
+    .cta-section{text-align:center;padding:8rem 2rem}
+    .cta-box{
+      max-width:700px;margin:0 auto;padding:4rem 3rem;border-radius:24px;
+      background:linear-gradient(135deg,rgba(59,130,246,.08),rgba(139,92,246,.08));
+      border:1px solid rgba(59,130,246,.2);position:relative;overflow:hidden;
+    }
+    .cta-box::before{
+      content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+      background:radial-gradient(circle at center,rgba(59,130,246,.06),transparent 50%);
+      animation:rotate-glow 20s linear infinite;
+    }
+    @keyframes rotate-glow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+    .cta-box>*{position:relative;z-index:1}
+    .cta-box h2{font-size:clamp(1.5rem,3vw,2.25rem);font-weight:800;margin-bottom:1rem;letter-spacing:-.02em}
+    .cta-box p{color:var(--text-secondary);margin-bottom:2rem;font-size:1.05rem}
+
+    /* ── Footer ── */
+    .footer{
+      position:relative;z-index:1;padding:3rem 2rem;
+      border-top:1px solid var(--border);text-align:center;
+    }
+    .footer p{color:var(--text-muted);font-size:.85rem}
+    .footer a{color:var(--accent-blue);text-decoration:none}
+    .footer a:hover{text-decoration:underline}
+    .footer-links{display:flex;justify-content:center;gap:1.5rem;margin-bottom:1rem}
+    .footer-links a{color:var(--text-secondary);font-size:.85rem}
+
+    /* ── Animations ── */
+    .fade-in{opacity:0;transform:translateY(30px);transition:all .6s ease}
+    .fade-in.visible{opacity:1;transform:translateY(0)}
+    .fade-in-delay-1{transition-delay:.1s}
+    .fade-in-delay-2{transition-delay:.2s}
+    .fade-in-delay-3{transition-delay:.3s}
+
+    /* ── Responsive ── */
+    @media(max-width:768px){
+      .nav-links{display:none}
+      .mobile-toggle{display:block}
+      .stats-grid{grid-template-columns:repeat(2,1fr);gap:1.5rem}
+      .projects-grid{grid-template-columns:1fr}
+      .hero{padding:7rem 1.5rem 4rem}
+      .cta-box{padding:2.5rem 1.5rem}
+      section{padding:4rem 1.5rem}
+    }
+    @media(max-width:480px){
+      .hero-actions{flex-direction:column;align-items:center}
+      .stats-grid{grid-template-columns:1fr 1fr}
+    }
+  </style>
+</head>
+<body>
+
+<!-- Animated Background Canvas -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- Navigation -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-icon">Dz</div>
+      <span class="nav-logo-text">Dzineer</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#tech">Tech Stack</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="https://github.com/dzineer" target="_blank" rel="noopener" class="nav-cta">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:4px"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.605-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
+      GitHub
+    </a>
+    <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle menu">&#9776;</button>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge fade-in">
+      <span class="hero-badge-dot"></span>
+      Building with AI
+    </div>
+    <h1 class="fade-in fade-in-delay-1">Engineering Intelligence,<br>Shipping Solutions</h1>
+    <p class="fade-in fade-in-delay-2">
+      We architect AI-powered systems &mdash; from LLM integrations and autonomous agents
+      to MCP tooling and full-stack applications. 400+ original projects. Relentless innovation.
+    </p>
+    <div class="hero-actions fade-in fade-in-delay-3">
+      <a href="#projects" class="btn-primary"><span>Explore Projects</span></a>
+      <a href="#contact" class="btn-secondary">Get In Touch</a>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Bar -->
+<div class="stats-bar">
+  <div class="stats-grid">
+    <div class="stat-item fade-in">
+      <h3><span class="gradient-text" data-count="404">0</span>+</h3>
+      <p>Original Repos</p>
+    </div>
+    <div class="stat-item fade-in fade-in-delay-1">
+      <h3><span class="gradient-text" data-count="5">0</span>K+</h3>
+      <p>Original Commits</p>
+    </div>
+    <div class="stat-item fade-in fade-in-delay-2">
+      <h3><span class="gradient-text" data-count="25">0</span>+</h3>
+      <p>AI/ML Projects</p>
+    </div>
+    <div class="stat-item fade-in fade-in-delay-3">
+      <h3><span class="gradient-text" data-count="10">0</span>+</h3>
+      <p>Years Engineering</p>
+    </div>
+  </div>
+</div>
+
+<!-- Featured Projects -->
+<section id="projects">
+  <div class="section-inner">
+    <div class="section-label">Featured Work</div>
+    <h2 class="section-title">Original Projects</h2>
+    <p class="section-desc">Built from scratch &mdash; proprietary AI systems, MCP services, voice assistants, and production SaaS platforms.</p>
+
+    <div class="category-tabs" id="category-tabs">
+      <button class="cat-tab active" data-cat="all">All Projects</button>
+      <button class="cat-tab" data-cat="ai">AI & Machine Learning</button>
+      <button class="cat-tab" data-cat="mcp">MCP & Dev Tools</button>
+      <button class="cat-tab" data-cat="voice">Voice AI</button>
+      <button class="cat-tab" data-cat="fullstack">Full-Stack & SaaS</button>
+    </div>
+
+    <div class="projects-grid" id="projects-grid">
+
+      <!-- AI & ML (all original) -->
+      <div class="project-card fade-in" data-cat="ai" style="--card-accent:var(--accent-cyan)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(6,182,212,.12);color:var(--accent-cyan)">&#129302;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>340</div>
+        </div>
+        <div class="card-name">Generative AI Studio <span class="card-tag" style="font-size:.6rem;padding:.1rem .4rem;margin-left:auto">Private</span></div>
+        <div class="card-desc">Full-featured Generative AI Studio for building, testing, and deploying AI-powered applications and workflows.</div>
+        <div class="card-tags"><span class="card-tag">GenAI</span><span class="card-tag">Studio</span><span class="card-tag lang">JavaScript</span></div>
+      </div>
+
+      <div class="project-card fade-in" data-cat="ai" style="--card-accent:var(--accent-blue)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(59,130,246,.12);color:var(--accent-blue)">&#128218;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>226</div>
+        </div>
+        <div class="card-name">RAG Tutorial <span class="card-tag" style="font-size:.6rem;padding:.1rem .4rem;margin-left:auto">Private</span></div>
+        <div class="card-desc">End-to-end Retrieval-Augmented Generation implementation. Document ingestion, embeddings, vector search, and LLM response generation.</div>
+        <div class="card-tags"><span class="card-tag">RAG</span><span class="card-tag">Embeddings</span><span class="card-tag lang">HTML</span></div>
+      </div>
+
+      <div class="project-card fade-in" data-cat="ai" style="--card-accent:var(--accent-purple)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(139,92,246,.12);color:var(--accent-purple)">&#129504;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>47</div>
+        </div>
+        <div class="card-name">AI Agents PoC <span class="card-tag" style="font-size:.6rem;padding:.1rem .4rem;margin-left:auto">Private</span></div>
+        <div class="card-desc">AI Agents with deployment pipelines, tool integration, and run-as-service capabilities. Production-ready agent infrastructure.</div>
+        <div class="card-tags"><span class="card-tag">AI Agents</span><span class="card-tag">Deployment</span><span class="card-tag lang">Python</span></div>
+      </div>
+
+      <div class="project-card fade-in" data-cat="ai" style="--card-accent:var(--accent-emerald)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(16,185,129,.12);color:var(--accent-emerald)">&#128161;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>35</div>
+        </div>
+        <div class="card-name">Dzineer AI Brain 2.0 <span class="card-tag" style="font-size:.6rem;padding:.1rem .4rem;margin-left:auto">Private</span></div>
+        <div class="card-desc">Second-generation AI brain system. Core intelligence engine powering reasoning, memory, and decision-making across Dzineer products.</div>
+        <div class="card-tags"><span class="card-tag">AI Core</span><span class="card-tag">Reasoning</span><span class="card-tag lang">Python</span></div>
+      </div>
+
+      <div class="project-card fade-in" data-cat="ai" style="--card-accent:var(--accent-orange)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(245,158,11,.12);color:var(--accent-orange)">&#129516;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>30</div>
+        </div>
+        <div class="card-name">Dzineer AI Agents <span class="card-tag" style="font-size:.6rem;padding:.1rem .4rem;margin-left:auto">Private</span></div>
+        <div class="card-desc">Multi-agent orchestration framework. Autonomous agents that collaborate, delegate tasks, and solve complex problems together.</div>
+        <div class="card-tags"><span class="card-tag">Multi-Agent</span><span class="card-tag">Orchestration</span><span class="card-tag lang">Python</span></div>
+      </div>
+
+      <div class="project-card fade-in" data-cat="ai" style="--card-accent:var(--accent-pink)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(236,72,153,.12);color:var(--accent-pink)">&#128736;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>29</div>
+        </div>
+        <div class="card-name">AI Workflow Engine <span class="card-tag" style="font-size:.6rem;padding:.1rem .4rem;margin-left:auto">Private</span></div>
+        <div class="card-desc">TypeScript-based AI workflow automation engine. Chain AI tasks, manage state, and build complex processing pipelines.</div>
+        <div class="card-tags"><span class="card-tag">Workflow</span><span class="card-tag">Automation</span><span class="card-tag lang">TypeScript</span></div>
+      </div>
+
+      <div class="project-card fade-in" data-cat="ai" style="--card-accent:var(--accent-cyan)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(6,182,212,.12);color:var(--accent-cyan)">&#127909;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>46</div>
+        </div>
+        <div class="card-name">YouTube Master Tool <span class="card-tag" style="font-size:.6rem;padding:.1rem .4rem;margin-left:auto">Private</span></div>
+        <div class="card-desc">AI-powered YouTube content analysis and management tool. Automated processing, insights extraction, and content optimization.</div>
+        <div class="card-tags"><span class="card-tag">YouTube</span><span class="card-tag">Content AI</span><span class="card-tag lang">Python</span></div>
+      </div>
+
+      <a href="https://github.com/dzineer/GenerativeAIV2" target="_blank" rel="noopener" class="project-card fade-in" data-cat="ai" style="--card-accent:var(--accent-blue)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(59,130,246,.12);color:var(--accent-blue)">&#9889;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>2</div>
+        </div>
+        <div class="card-name">Generative AI V2 <span class="arrow">&rarr;</span></div>
+        <div class="card-desc">Second generation generative AI application. Building on lessons learned from V1 with improved architecture and capabilities.</div>
+        <div class="card-tags"><span class="card-tag">GenAI</span><span class="card-tag">V2</span><span class="card-tag lang">JavaScript</span></div>
+      </a>
+
+      <!-- Voice AI (all original) -->
+      <div class="project-card fade-in" data-cat="voice" style="--card-accent:var(--accent-emerald)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(16,185,129,.12);color:var(--accent-emerald)">&#127908;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>115</div>
+        </div>
+        <div class="card-name">Voice Assistant <span class="card-tag" style="font-size:.6rem;padding:.1rem .4rem;margin-left:auto">Private</span></div>
+        <div class="card-desc">Custom AI voice assistant with natural language understanding, real-time speech processing, and intelligent response generation.</div>
+        <div class="card-tags"><span class="card-tag">Voice AI</span><span class="card-tag">NLU</span><span class="card-tag lang">JavaScript</span></div>
+      </div>
+
+      <div class="project-card fade-in" data-cat="voice" style="--card-accent:var(--accent-purple)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(139,92,246,.12);color:var(--accent-purple)">&#128483;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>56</div>
+        </div>
+        <div class="card-name">AI Voice + Transcription <span class="card-tag" style="font-size:.6rem;padding:.1rem .4rem;margin-left:auto">Private</span></div>
+        <div class="card-desc">Native iOS AI voice assistant with real-time transcription. Speech-to-text, AI processing, and voice response in a native Swift app.</div>
+        <div class="card-tags"><span class="card-tag">iOS</span><span class="card-tag">Transcription</span><span class="card-tag lang">Swift</span></div>
+      </div>
+
+      <div class="project-card fade-in" data-cat="voice" style="--card-accent:var(--accent-cyan)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(6,182,212,.12);color:var(--accent-cyan)">&#128266;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>&bull;</div>
+        </div>
+        <div class="card-name">AI Voice Assist <span class="card-tag" style="font-size:.6rem;padding:.1rem .4rem;margin-left:auto">Private</span></div>
+        <div class="card-desc">Embedded AI voice assistance system with custom wake word detection, command processing, and intelligent automation.</div>
+        <div class="card-tags"><span class="card-tag">Embedded</span><span class="card-tag">Voice</span><span class="card-tag lang">Makefile</span></div>
+      </div>
+
+      <!-- MCP & Dev Tools (original) -->
+      <a href="https://github.com/dzineer/claude-iterm2-panel-grouping" target="_blank" rel="noopener" class="project-card fade-in" data-cat="mcp" style="--card-accent:var(--accent-purple)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(139,92,246,.12);color:var(--accent-purple)">&#128421;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>Open Source</div>
+        </div>
+        <div class="card-name">Claude iTerm2 Panel <span class="arrow">&rarr;</span></div>
+        <div class="card-desc">iTerm2 extension that auto-detects and groups Claude Code sessions into a dedicated window with left tab bar navigation.</div>
+        <div class="card-tags"><span class="card-tag">Claude Code</span><span class="card-tag">iTerm2</span><span class="card-tag lang">Python</span></div>
+      </a>
+
+      <div class="project-card fade-in" data-cat="mcp" style="--card-accent:var(--accent-cyan)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(6,182,212,.12);color:var(--accent-cyan)">&#128268;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>&bull;</div>
+        </div>
+        <div class="card-name">Agent Messaging MCP <span class="card-tag" style="font-size:.6rem;padding:.1rem .4rem;margin-left:auto">Private</span></div>
+        <div class="card-desc">MCP service for inter-agent messaging. Enables AI agents to communicate, coordinate, and share context through the Model Context Protocol.</div>
+        <div class="card-tags"><span class="card-tag">MCP</span><span class="card-tag">Messaging</span><span class="card-tag lang">Python</span></div>
+      </div>
+
+      <div class="project-card fade-in" data-cat="mcp" style="--card-accent:var(--accent-emerald)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(16,185,129,.12);color:var(--accent-emerald)">&#127959;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>&bull;</div>
+        </div>
+        <div class="card-name">App Architect MCP <span class="card-tag" style="font-size:.6rem;padding:.1rem .4rem;margin-left:auto">Private</span></div>
+        <div class="card-desc">MCP service for AI-powered application architecture. Generates project structures, designs systems, and scaffolds codebases.</div>
+        <div class="card-tags"><span class="card-tag">MCP</span><span class="card-tag">Architecture</span><span class="card-tag lang">Python</span></div>
+      </div>
+
+      <div class="project-card fade-in" data-cat="mcp" style="--card-accent:var(--accent-orange)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(245,158,11,.12);color:var(--accent-orange)">&#129302;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>&bull;</div>
+        </div>
+        <div class="card-name">App Assist MCP + LLM <span class="card-tag" style="font-size:.6rem;padding:.1rem .4rem;margin-left:auto">Private</span></div>
+        <div class="card-desc">LLM-enhanced MCP assistance service. Provides intelligent code completion, analysis, and development guidance through MCP.</div>
+        <div class="card-tags"><span class="card-tag">MCP</span><span class="card-tag">LLM</span><span class="card-tag lang">Python</span></div>
+      </div>
+
+      <div class="project-card fade-in" data-cat="mcp" style="--card-accent:var(--accent-blue)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(59,130,246,.12);color:var(--accent-blue)">&#128736;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>18</div>
+        </div>
+        <div class="card-name">DZ Cursor Tooling <span class="card-tag" style="font-size:.6rem;padding:.1rem .4rem;margin-left:auto">Private</span></div>
+        <div class="card-desc">Agentic tooling and workflows for Cursor.ai. Custom automations, context management, and productivity enhancements for AI-assisted development.</div>
+        <div class="card-tags"><span class="card-tag">Cursor.ai</span><span class="card-tag">Agentic</span><span class="card-tag lang">Python</span></div>
+      </div>
+
+      <div class="project-card fade-in" data-cat="mcp" style="--card-accent:var(--accent-pink)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(236,72,153,.12);color:var(--accent-pink)">&#128279;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>&bull;</div>
+        </div>
+        <div class="card-name">A2A Agent Service <span class="card-tag" style="font-size:.6rem;padding:.1rem .4rem;margin-left:auto">Private</span></div>
+        <div class="card-desc">NPM Agent-to-Agent service enabling direct communication between AI agents. Protocol-level integration for multi-agent systems.</div>
+        <div class="card-tags"><span class="card-tag">A2A</span><span class="card-tag">NPM</span><span class="card-tag lang">JavaScript</span></div>
+      </div>
+
+      <a href="https://github.com/dzineer/documentation-mcp-open" target="_blank" rel="noopener" class="project-card fade-in" data-cat="mcp" style="--card-accent:var(--accent-emerald)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(16,185,129,.12);color:var(--accent-emerald)">&#128196;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>Open Source</div>
+        </div>
+        <div class="card-name">Documentation MCP <span class="arrow">&rarr;</span></div>
+        <div class="card-desc">Open-source MCP server for documentation generation and management. Automated docs from code with AI-powered summaries.</div>
+        <div class="card-tags"><span class="card-tag">MCP</span><span class="card-tag">Documentation</span><span class="card-tag lang">Python</span></div>
+      </a>
+
+      <!-- Full-Stack & SaaS (original) -->
+      <div class="project-card fade-in" data-cat="fullstack" style="--card-accent:var(--accent-emerald)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(16,185,129,.12);color:var(--accent-emerald)">&#128176;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>2,015</div>
+        </div>
+        <div class="card-name">AgentQuote v4 <span class="card-tag" style="font-size:.6rem;padding:.1rem .4rem;margin-left:auto">Private</span></div>
+        <div class="card-desc">Latest generation of the AgentQuote insurance quoting platform. Multi-project support, custom profiles, and advanced business logic.</div>
+        <div class="card-tags"><span class="card-tag">SaaS</span><span class="card-tag">Laravel</span><span class="card-tag lang">PHP</span></div>
+      </div>
+
+      <a href="https://github.com/dzineer/app_agentquote_com_laravel_v3" target="_blank" rel="noopener" class="project-card fade-in" data-cat="fullstack" style="--card-accent:var(--accent-cyan)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(6,182,212,.12);color:var(--accent-cyan)">&#128176;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>1,051</div>
+        </div>
+        <div class="card-name">AgentQuote v3 <span class="arrow">&rarr;</span></div>
+        <div class="card-desc">Full-featured insurance quoting platform built with Laravel. Production-grade SaaS application with complex business logic.</div>
+        <div class="card-tags"><span class="card-tag">SaaS</span><span class="card-tag">Laravel</span><span class="card-tag lang">PHP</span></div>
+      </a>
+
+      <div class="project-card fade-in" data-cat="fullstack" style="--card-accent:var(--accent-purple)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(139,92,246,.12);color:var(--accent-purple)">&#128187;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>273</div>
+        </div>
+        <div class="card-name">FPI Platform <span class="card-tag" style="font-size:.6rem;padding:.1rem .4rem;margin-left:auto">Private</span></div>
+        <div class="card-desc">Financial Products Integration platform. Multi-phase project with chatbot integration, dynamic UI, and complex data workflows.</div>
+        <div class="card-tags"><span class="card-tag">FinTech</span><span class="card-tag">Platform</span><span class="card-tag lang">HTML</span></div>
+      </div>
+
+      <div class="project-card fade-in" data-cat="fullstack" style="--card-accent:var(--accent-orange)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(245,158,11,.12);color:var(--accent-orange)">&#127912;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>170</div>
+        </div>
+        <div class="card-name">DZ Studio <span class="card-tag" style="font-size:.6rem;padding:.1rem .4rem;margin-left:auto">Private</span></div>
+        <div class="card-desc">Custom development studio environment. Integrated workspace for building, testing, and deploying web applications.</div>
+        <div class="card-tags"><span class="card-tag">IDE</span><span class="card-tag">Workspace</span><span class="card-tag lang">JavaScript</span></div>
+      </div>
+
+      <div class="project-card fade-in" data-cat="fullstack" style="--card-accent:var(--accent-blue)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(59,130,246,.12);color:var(--accent-blue)">&#128722;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>127</div>
+        </div>
+        <div class="card-name">AgentQuote Store <span class="card-tag" style="font-size:.6rem;padding:.1rem .4rem;margin-left:auto">Private</span></div>
+        <div class="card-desc">E-commerce storefront for the AgentQuote ecosystem. Product listings, subscriptions, and payment processing for insurance tools.</div>
+        <div class="card-tags"><span class="card-tag">E-Commerce</span><span class="card-tag">Laravel</span><span class="card-tag lang">PHP</span></div>
+      </div>
+
+      <div class="project-card fade-in" data-cat="fullstack" style="--card-accent:var(--accent-pink)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(236,72,153,.12);color:var(--accent-pink)">&#128274;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>40</div>
+        </div>
+        <div class="card-name">FPI Chatbot <span class="card-tag" style="font-size:.6rem;padding:.1rem .4rem;margin-left:auto">Private</span></div>
+        <div class="card-desc">AI-powered chatbot for the FPI platform. Customer-facing conversational interface with domain-specific knowledge and workflow automation.</div>
+        <div class="card-tags"><span class="card-tag">Chatbot</span><span class="card-tag">AI</span><span class="card-tag lang">JavaScript</span></div>
+      </div>
+
+      <a href="https://github.com/dzineer/dzineer-framework" target="_blank" rel="noopener" class="project-card fade-in" data-cat="fullstack" style="--card-accent:var(--accent-emerald)">
+        <div class="card-header">
+          <div class="card-icon" style="background:rgba(16,185,129,.12);color:var(--accent-emerald)">&#128640;</div>
+          <div class="card-commits"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"/></svg>Open Source</div>
+        </div>
+        <div class="card-name">Dzineer Framework <span class="arrow">&rarr;</span></div>
+        <div class="card-desc">Custom PHP framework built from the ground up. Lightweight, performant foundation for web applications with opinionated conventions.</div>
+        <div class="card-tags"><span class="card-tag">Framework</span><span class="card-tag">Custom</span><span class="card-tag lang">PHP</span></div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- Services -->
+<section id="services" style="background:rgba(12,16,32,.4)">
+  <div class="section-inner">
+    <div class="section-label">What We Do</div>
+    <h2 class="section-title">AI Engineering Services</h2>
+    <p class="section-desc">End-to-end AI solutions from prototype to production. We build systems that think, learn, and scale.</p>
+
+    <div class="services-grid">
+      <div class="service-card fade-in">
+        <div class="service-icon" style="background:rgba(59,130,246,.12);color:var(--accent-blue)">&#129504;</div>
+        <h3>LLM Integration & Fine-Tuning</h3>
+        <p>Custom LLM solutions using GPT-4, Claude, Llama, and open-source models. RAG pipelines, prompt engineering, and domain-specific fine-tuning for your business.</p>
+      </div>
+      <div class="service-card fade-in fade-in-delay-1">
+        <div class="service-icon" style="background:rgba(139,92,246,.12);color:var(--accent-purple)">&#129302;</div>
+        <h3>Autonomous AI Agents</h3>
+        <p>Design and deploy AI agents that can reason, plan, and execute multi-step workflows. From customer service to code generation &mdash; agents that deliver.</p>
+      </div>
+      <div class="service-card fade-in fade-in-delay-2">
+        <div class="service-icon" style="background:rgba(6,182,212,.12);color:var(--accent-cyan)">&#128268;</div>
+        <h3>MCP Tooling & Infrastructure</h3>
+        <p>Model Context Protocol integration, custom MCP servers, and developer tooling that connects AI models to your data, APIs, and workflows.</p>
+      </div>
+      <div class="service-card fade-in fade-in-delay-3">
+        <div class="service-icon" style="background:rgba(16,185,129,.12);color:var(--accent-emerald)">&#127959;</div>
+        <h3>Full-Stack AI Applications</h3>
+        <p>Production-grade web and mobile applications with embedded intelligence. React, Next.js, Laravel, Python &mdash; built for scale from day one.</p>
+      </div>
+      <div class="service-card fade-in">
+        <div class="service-icon" style="background:rgba(245,158,11,.12);color:var(--accent-orange)">&#128640;</div>
+        <h3>AI Strategy & Consulting</h3>
+        <p>Navigate the AI landscape with confidence. Technology assessment, roadmapping, and implementation strategy aligned with your business goals.</p>
+      </div>
+      <div class="service-card fade-in fade-in-delay-1">
+        <div class="service-icon" style="background:rgba(236,72,153,.12);color:var(--accent-pink)">&#128272;</div>
+        <h3>Self-Hosted & Private AI</h3>
+        <p>Keep your data yours. Deploy local AI solutions using LocalAI, Ollama, and custom inference pipelines. Enterprise-grade privacy without compromises.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Tech Stack -->
+<section id="tech">
+  <div class="section-inner">
+    <div class="section-label">Technology</div>
+    <h2 class="section-title">Our Tech Stack</h2>
+    <p class="section-desc">Battle-tested technologies across the full AI and web development spectrum.</p>
+
+    <div class="tech-grid">
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#3178c6"></span>TypeScript</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#3776ab"></span>Python</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#61dafb"></span>React</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#000"></span>Next.js</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#4fc08d"></span>Vue.js</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#ff2d20"></span>Laravel</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#777bb4"></span>PHP</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#00add8"></span>Go</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#f7df1e"></span>JavaScript</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#fa4616"></span>Swift</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#10b981"></span>OpenAI API</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#d97757"></span>Claude API</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#8b5cf6"></span>LangChain</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#06b6d4"></span>MCP Protocol</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#ee4c2c"></span>PyTorch</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#ff6f00"></span>TensorFlow</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#0db7ed"></span>Docker</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#326ce5"></span>Kubernetes</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#ff9900"></span>AWS</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#336791"></span>PostgreSQL</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#dc382d"></span>Redis</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#38bdf8"></span>Tailwind CSS</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#47a248"></span>MongoDB</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#f56040"></span>Ollama</div>
+      <div class="tech-pill"><span class="tech-pill-dot" style="background:#764abc"></span>RAG Pipelines</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / Contact -->
+<section id="contact" class="cta-section">
+  <div class="cta-box fade-in">
+    <h2>Ready to Build with AI?</h2>
+    <p>Let's turn your vision into intelligent, production-ready software. From concept to deployment, we engineer solutions that matter.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+      <a href="mailto:frank@dzineer.com" class="btn-primary"><span>Start a Conversation</span></a>
+      <a href="https://github.com/dzineer" target="_blank" rel="noopener" class="btn-secondary">View GitHub Profile</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-links">
+    <a href="https://github.com/dzineer" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://dzineer.com" target="_blank" rel="noopener">dzineer.com</a>
+    <a href="mailto:frank@dzineer.com">Email</a>
+  </div>
+  <p>&copy; 2026 Dzineer &mdash; Frank Decker. Engineering the future with AI.</p>
+</footer>
+
+<script>
+// ── Animated Particle Background ──
+(function() {
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let w, h, particles = [], connections = [];
+  const PARTICLE_COUNT = 80;
+  const CONNECTION_DIST = 150;
+  const MOUSE = { x: -1000, y: -1000 };
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+
+  class Particle {
+    constructor() {
+      this.x = Math.random() * w;
+      this.y = Math.random() * h;
+      this.vx = (Math.random() - 0.5) * 0.4;
+      this.vy = (Math.random() - 0.5) * 0.4;
+      this.r = Math.random() * 2 + 0.5;
+      this.alpha = Math.random() * 0.5 + 0.1;
+    }
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      if (this.x < 0 || this.x > w) this.vx *= -1;
+      if (this.y < 0 || this.y > h) this.vy *= -1;
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(59,130,246,${this.alpha})`;
+      ctx.fill();
+    }
+  }
+
+  function init() {
+    resize();
+    particles = [];
+    for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, w, h);
+    for (let i = 0; i < particles.length; i++) {
+      particles[i].update();
+      particles[i].draw();
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < CONNECTION_DIST) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(59,130,246,${0.06 * (1 - dist / CONNECTION_DIST)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+      // Mouse interaction
+      const mdx = particles[i].x - MOUSE.x;
+      const mdy = particles[i].y - MOUSE.y;
+      const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+      if (mdist < 200) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(MOUSE.x, MOUSE.y);
+        ctx.strokeStyle = `rgba(139,92,246,${0.1 * (1 - mdist / 200)})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+
+  window.addEventListener('resize', () => { resize(); });
+  window.addEventListener('mousemove', (e) => { MOUSE.x = e.clientX; MOUSE.y = e.clientY; });
+  init();
+  animate();
+})();
+
+// ── Scroll Animations ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// ── Nav Scroll Effect ──
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// ── Category Tabs ──
+document.getElementById('category-tabs').addEventListener('click', (e) => {
+  if (!e.target.classList.contains('cat-tab')) return;
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+  e.target.classList.add('active');
+  const cat = e.target.dataset.cat;
+  document.querySelectorAll('.project-card').forEach(card => {
+    if (cat === 'all' || card.dataset.cat === cat) {
+      card.style.display = 'flex';
+      setTimeout(() => card.classList.add('visible'), 50);
+    } else {
+      card.style.display = 'none';
+      card.classList.remove('visible');
+    }
+  });
+});
+
+// ── Animated Counter ──
+function animateCounters() {
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const target = parseInt(el.dataset.count);
+    const duration = 2000;
+    const start = performance.now();
+    function tick(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.floor(target * eased);
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  });
+}
+
+const statsObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      animateCounters();
+      statsObserver.disconnect();
+    }
+  });
+}, { threshold: 0.5 });
+statsObserver.observe(document.querySelector('.stats-bar'));
+
+// ── Mobile Menu (simple toggle) ──
+document.getElementById('mobile-toggle').addEventListener('click', () => {
+  const links = document.querySelector('.nav-links');
+  if (links.style.display === 'flex') {
+    links.style.display = 'none';
+  } else {
+    links.style.display = 'flex';
+    links.style.flexDirection = 'column';
+    links.style.position = 'absolute';
+    links.style.top = '100%';
+    links.style.left = '0';
+    links.style.right = '0';
+    links.style.background = 'rgba(6,8,15,.98)';
+    links.style.padding = '1rem 2rem';
+    links.style.borderBottom = '1px solid var(--border)';
+  }
+});
+</script>
+
+</body>
+</html>
